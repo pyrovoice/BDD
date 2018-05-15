@@ -1,0 +1,23 @@
+CREATE PROCEDURE [dbo].CountMail
+	@mail NVARCHAR(MAX)
+AS
+	SELECT COUNT(*) FROM USERS WHERE users.Email = @mail
+RETURN
+
+CREATE PROCEDURE dbo.CreateUser
+    @name NVARCHAR(50),
+    @password NVARCHAR(50),
+	@email NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON
+    INSERT INTO dbo.[Users] (name, Password, Email, isEmailConfirmed)
+    VALUES(@name, HASHBYTES('MD5', @password), @email, 0)
+END
+
+CREATE PROCEDURE [dbo].IdentifyUser
+	@name NVARCHAR(50),
+	@password NVARCHAR(50)
+AS
+	SELECT * from users where users.name = @name AND HASHBYTES('MD5', @password) = users.Password
+RETURN
