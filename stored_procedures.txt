@@ -21,3 +21,19 @@ CREATE PROCEDURE [dbo].IdentifyUser
 AS
 	SELECT * from users where users.name = @name AND HASHBYTES('MD5', @password) = users.Password
 RETURN
+
+CREATE PROCEDURE [dbo].CreateExam
+	@userId NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON
+    INSERT INTO dbo.[Exams] (StartDate, User_Id)
+    VALUES(GETDATE(), @userId)
+END
+
+CREATE PROCEDURE [dbo].GetOngoingExam
+	@username NVARCHAR(50)
+AS
+	BEGIN
+RETURN (SELECT * FROM Exams, Users where Users.Name = @username AND Exams.User_Id = Users.Id AND DATEDIFF(minute, Exams.StartDate, GETDATE()) <15);
+END
