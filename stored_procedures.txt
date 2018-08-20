@@ -11,8 +11,8 @@ CREATE PROCEDURE dbo.CreateUser
 AS
 BEGIN
     SET NOCOUNT ON
-    INSERT INTO dbo.[Users] (name, Password, Email, isEmailConfirmed)
-    VALUES(@name, HASHBYTES('MD5', @password), @email, 0)
+    INSERT INTO dbo.[Users] (name, Password, Email, isEmailConfirmed, RegisterationDate)
+    VALUES(@name, HASHBYTES('MD5', @password), @email, 0, GETDATE())
 END
 
 CREATE PROCEDURE [dbo].IdentifyUser
