@@ -3,6 +3,7 @@ CREATE PROCEDURE [dbo].CountMail
 AS
 	SELECT COUNT(*) FROM USERS WHERE users.Email = @mail
 RETURN
+GO
 
 CREATE PROCEDURE dbo.CreateUser
     @name NVARCHAR(50),
@@ -14,6 +15,7 @@ BEGIN
     INSERT INTO dbo.[Users] (name, Password, Email, isEmailConfirmed, RegisterationDate)
     VALUES(@name, HASHBYTES('MD5', @password), @email, 0, GETDATE())
 END
+GO
 
 CREATE PROCEDURE [dbo].IdentifyUser
 	@name NVARCHAR(50),
@@ -21,6 +23,7 @@ CREATE PROCEDURE [dbo].IdentifyUser
 AS
 	SELECT * from users where users.name = @name AND HASHBYTES('MD5', @password) = users.Password
 RETURN
+GO
 
 CREATE PROCEDURE [dbo].CreateExam
 	@userId NVARCHAR(50)
@@ -30,10 +33,17 @@ BEGIN
     INSERT INTO dbo.[Exams] (StartDate, User_Id)
     VALUES(GETDATE(), @userId)
 END
+GO
 
-CREATE PROCEDURE [dbo].GetOngoingExam
-	@username NVARCHAR(50)
+CREATE PROCEDURE dbo.UpdateUser
+	@id int,
+    @name NVARCHAR(50),
+    @password NVARCHAR(50),
+	@email NVARCHAR(50)
 AS
-	BEGIN
-RETURN (SELECT * FROM Exams, Users where Users.Name = @username AND Exams.User_Id = Users.Id AND DATEDIFF(minute, Exams.StartDate, GETDATE()) <15);
+BEGIN
+    SET NOCOUNT ON
+    UPDATE dbo.[Users] 
+	SET Name = @name, Password = HASHBYTES('MD5', @password), Email = @email
+    WHERE Users.Id = @id;
 END
